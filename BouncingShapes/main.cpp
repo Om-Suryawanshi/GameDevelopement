@@ -10,6 +10,7 @@
 
 #define WINDOW_HEIGHT 800
 #define WINDOW_WIDTH 800
+#define CONFIG "config.txt"
 
 struct color
 {
@@ -141,6 +142,7 @@ void updatePositions(std::vector<shape>& shapes)
     {
 		s.s_position.x += s.s_velocity.x;
         s.s_position.y += s.s_velocity.y;
+
         // Bounce off the walls
         if (s.s_position.x < 0 || s.s_position.x + s.size > WINDOW_WIDTH)
             s.s_velocity.x *= -1;
@@ -148,6 +150,9 @@ void updatePositions(std::vector<shape>& shapes)
         // Bounce vertically
         if (s.s_position.y < 0 || s.s_position.y + s.size > WINDOW_HEIGHT)
             s.s_velocity.y *= -1;
+
+        // Update positions
+        writeConfig("config.txt", shapes);
 	}
 }
 
@@ -160,6 +165,7 @@ int main()
 	window.setFramerateLimit(60);
 
     std::vector<shape> shapes;
+    int selectedShapeIndex = 0;
 	readConfig("config.txt", shapes);
 
     sf::Font font;
@@ -183,7 +189,42 @@ int main()
         ImGui::SFML::Update(window, deltaClock.restart());
 
         ImGui::Begin("Config");
-        //ImGui::Text("Window text!");
+        ImGui::Text("Shapes Config!");
+        if (ImGui::BeginCombo("Select Shape", shapes[selectedShapeIndex].s_text.c_str()))
+        {
+            for (int i = 0; i < shapes.size(); ++i) 
+            {
+                bool isSelected = (i == selectedShapeIndex);
+                if (ImGui::Selectable(shapes[i].s_text.c_str(), isSelected))
+                {
+                    selectedShapeIndex = i;
+                }
+                if (isSelected)
+                {
+                    ImGui::SetItemDefaultFocus();
+                }
+            }
+            ImGui::EndCombo();
+        }
+
+        shape& selectedShape = shapes[selectedShapeIndex];
+        ImGui::ColorEdit3("Color", &selectedShape.s_color.r);
+        ImGui::SliderInt("Size", &selectedShape.size, 5, 10);
+        ImGui::SliderFloat2("Velocity", &selectedShape.s_velocity.x, -10.0f, 10.0f);
+        ImGui::SliderFloat2("Position", &selectedShape.s_position.x, 0.0f, 800.0f);
+        char buff[128];
+        //strncpy(buff, selectedShape.s_text.c_str(), sizeof(buff));
+        strncpy_s(buff, sizeof(buff), selectedShape.s_text.c_str(), 128);
+        if (ImGui::InputText("Label", buff, sizeof(buff))) 
+        {
+            selectedShape.s_text = buff;
+        }
+
+        if (ImGui::Button("Save"))
+        {
+            writeConfig("config.txt", shapes);
+        }
+
         ImGui::End();
 
         window.clear(sf::Color::Black);

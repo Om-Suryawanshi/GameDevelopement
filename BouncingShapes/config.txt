@@ -1,2 +1,2 @@
-circle 1 0 0 "RedBall" 100 100 30 0.0 2.0 3.0
-rectangle 0 1 0 "GreenBox" 300 200 40 0.0 -2.5 1.5
+circle 1 0 0 "RedBall" 400 257.056 30 0 10 -8.033
+rectangle 1 1 1 "WhiteBox" 172.5 70.9457 10 0 2.5 3.77
