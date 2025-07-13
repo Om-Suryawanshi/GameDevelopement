@@ -1,0 +1,24 @@
+# Ignore compiled binaries and build stuff
+*.exe
+*.dll
+*.obj
+*.pdb
+*.log
+
+# Ignore IDE-specific folders
+.vscode/
+.vs/
+*.user
+*.suo
+
+# Ignore build directories
+build/
+bin/
+Debug/
+Release/
+
+# (Optional) ignore local git repos inside subfolders
+BouncingShapes/.git
+OtherStuff/.git
+
+Setup.zip
