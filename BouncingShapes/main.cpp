@@ -77,16 +77,45 @@ void renderShapes(sf::RenderWindow& window, const std::vector<shape>& shapes, co
             ));
             window.draw(circle);
         }
-        else if(s.s_type == "rectangle")
+        else if(s.s_type == "square")
         {
-			sf::RectangleShape rectangle(sf::Vector2f(s.size, s.size));
-			rectangle.setPosition(s.s_position.x, s.s_position.y);
-            rectangle.setFillColor(sf::Color(
+			sf::RectangleShape square(sf::Vector2f(s.size, s.size));
+			square.setPosition(s.s_position.x, s.s_position.y);
+            square.setFillColor(sf::Color(
                 static_cast<int>(s.s_color.r * 255),
                 static_cast<int>(s.s_color.g * 255),
                 static_cast<int>(s.s_color.b * 255)
             ));
-			window.draw(rectangle);
+			window.draw(square);
+        }
+        else if (s.s_type == "triangle")
+        {
+            sf::ConvexShape triangle;
+            triangle.setPointCount(3);
+			float x = s.s_position.x;
+            float y = s.s_position.y;
+            float size = static_cast<float>(s.size);
+			triangle.setPoint(0, sf::Vector2f(x + size / 2.0f, y));
+			triangle.setPoint(1, sf::Vector2f(x, y + size));
+			triangle.setPoint(2, sf::Vector2f(x + size, y + size));
+            triangle.setFillColor(sf::Color(
+                static_cast<int>(s.s_color.r * 255),
+                static_cast<int>(s.s_color.g * 255),
+                static_cast<int>(s.s_color.b * 255)
+			));
+            window.draw(triangle);
+        }
+        else if (s.s_type == "ellipse")
+        {
+            sf::CircleShape ellipse(s.size);
+            ellipse.setScale(1.5f, 1.0f);  // Wider than tall
+            ellipse.setPosition(s.s_position.x, s.s_position.y);
+            ellipse.setFillColor(sf::Color(
+                static_cast<int>(s.s_color.r * 255),
+                static_cast<int>(s.s_color.g * 255),
+                static_cast<int>(s.s_color.b * 255)
+            ));
+            window.draw(ellipse);
         }
     }
 }
@@ -143,17 +172,38 @@ void updatePositions(std::vector<shape>& shapes)
 		s.s_position.x += s.s_velocity.x;
         s.s_position.y += s.s_velocity.y;
 
-        // Bounce off the walls
-        if (s.s_position.x < 0 || s.s_position.x + s.size > WINDOW_WIDTH)
-            s.s_velocity.x *= -1;
+        if (s.s_type == "circle")
+        {
+            if (s.s_position.x < 0 || s.s_position.x + s.size > WINDOW_HEIGHT - s.size)
+                s.s_velocity.x *= -1;
+        }
+        else if (s.s_type == "ellipse")
+        {
+			if (s.s_position.x < 0 || s.s_position.x + s.size > WINDOW_HEIGHT - s.size * 2.0f) // The size is scaled for ellipse
+				s.s_velocity.x *= -1;
+        }
+        else
+        {
+            // Bounce off the walls
+            if (s.s_position.x < 0 || s.s_position.x + s.size > WINDOW_WIDTH)
+                s.s_velocity.x *= -1;
+        }
 
         // Bounce vertically
-        if (s.s_position.y < 0 || s.s_position.y + s.size > WINDOW_HEIGHT)
-            s.s_velocity.y *= -1;
+        if (s.s_type == "circle" || s.s_type == "ellipse") // the x is same ellipse not scaled 
+        {
+            if(s.s_position.y < 0 || s.s_position.y + s.size > WINDOW_HEIGHT - s.size)
+				s.s_velocity.y *= -1;
+        }
+        else //rectangle
+        {
+            if (s.s_position.y < 0 || s.s_position.y + s.size > WINDOW_HEIGHT)
+                s.s_velocity.y *= -1;
+        }
 
-        // Update positions
-        writeConfig("config.txt", shapes);
-	}
+    }
+	// Update positions moved out of the loop to avoid writing config on every frame
+    writeConfig(CONFIG, shapes);
 }
 
 
@@ -166,9 +216,15 @@ int main()
 
     std::vector<shape> shapes;
     int selectedShapeIndex = 0;
-	readConfig("config.txt", shapes);
+
+	readConfig(CONFIG, shapes);
 
     sf::Font font;
+
+    int const minShapeSize = 10;
+    int const maxShapeSize = 50;
+    float const minVelocity = -10;
+    float const maxVelocity = 10;
 
     if (!font.loadFromFile("MOELA.ttf"))
     {
@@ -209,21 +265,17 @@ int main()
 
         shape& selectedShape = shapes[selectedShapeIndex];
         ImGui::ColorEdit3("Color", &selectedShape.s_color.r);
-        ImGui::SliderInt("Size", &selectedShape.size, 5, 10);
-        ImGui::SliderFloat2("Velocity", &selectedShape.s_velocity.x, -10.0f, 10.0f);
-        ImGui::SliderFloat2("Position", &selectedShape.s_position.x, 0.0f, 800.0f);
+        ImGui::SliderInt("Size", &selectedShape.size, minShapeSize, maxShapeSize);
+        ImGui::SliderFloat2("Velocity", &selectedShape.s_velocity.x, minVelocity, maxVelocity);
+        ImGui::SliderFloat2("Position", &selectedShape.s_position.x, 0.0f, 750.0f);
         char buff[128];
-        //strncpy(buff, selectedShape.s_text.c_str(), sizeof(buff));
-        strncpy_s(buff, sizeof(buff), selectedShape.s_text.c_str(), 128);
+        strncpy_s(buff, sizeof(buff), selectedShape.s_text.c_str(), sizeof(buff));
         if (ImGui::InputText("Label", buff, sizeof(buff))) 
         {
             selectedShape.s_text = buff;
         }
 
-        if (ImGui::Button("Save"))
-        {
-            writeConfig("config.txt", shapes);
-        }
+		//No need to save the shape it gets saved in the updatePositions function
 
         ImGui::End();
 
@@ -234,6 +286,7 @@ int main()
         window.display();
     }
 
+    //writeConfig(CONFIG, shapes);
     ImGui::SFML::Shutdown();
     return 0;
 }
