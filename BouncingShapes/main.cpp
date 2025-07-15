@@ -8,49 +8,12 @@
 #include <iostream>
 #include <iomanip> // for std::quoted
 
+// User Defined Headers
+#include "shapes.h"
+
 #define WINDOW_HEIGHT 800
 #define WINDOW_WIDTH 800
 #define CONFIG "config.txt"
-
-struct color
-{
-    float r;
-    float g;
-    float b;
-    color(float red, float green, float blue)
-        : r(red), g(green), b(blue) {}
-};
-
-struct position
-{
-    float x;
-    float y;
-    position(float xPos, float yPos)
-        : x(xPos), y(yPos) {}
-};
-
-struct velocity
-{
-    float x;
-    float y;
-    velocity(float xVel, float yVel)
-        : x(xVel), y(yVel) {}
-};
-
-struct shape
-{
-    std::string s_type;
-	color s_color;
-    std::string s_text;
-	position s_position;
-	int size;
-	float pushDirection;
-	velocity s_velocity;
-    shape(const std::string& type, const color& col, const std::string& text,
-          const position& pos, int sz, float pushDir, const velocity& vel)
-        : s_type(type), s_color(col), s_text(text), s_position(pos),
-		size(sz), pushDirection(pushDir), s_velocity(vel) {}
-};
 
 
 void renderShapes(sf::RenderWindow& window, const std::vector<shape>& shapes, const sf::Font& font)
@@ -95,7 +58,7 @@ void renderShapes(sf::RenderWindow& window, const std::vector<shape>& shapes, co
 			float x = s.s_position.x;
             float y = s.s_position.y;
             float size = static_cast<float>(s.size);
-			triangle.setPoint(0, sf::Vector2f(x + size / 2.0f, y));
+			triangle.setPoint(0, sf::Vector2f(x + size / 2.0f, y)); // 2.0 centers the top dot of the triangle
 			triangle.setPoint(1, sf::Vector2f(x, y + size));
 			triangle.setPoint(2, sf::Vector2f(x + size, y + size));
             triangle.setFillColor(sf::Color(
@@ -134,7 +97,6 @@ void writeConfig(const std::string& filename, const std::vector<shape>& shapes)
              << s.s_position.x << " "
              << s.s_position.y << " "
              << s.size << " "
-             << s.pushDirection << " "
 			 << s.s_velocity.x << " "
 			 << s.s_velocity.y << "\n";
 	}
@@ -151,19 +113,18 @@ void readConfig(const std::string& filename, std::vector<shape>& shapes)
         return;
 	}
 	std::string type, text;
-    float r, g, b, x, y, pushDirection, velx, vely;
+    float r, g, b, x, y, velx, vely;
     int size;
 
-    while (file >> type >> r >> g >> b >> std::quoted(text) >> x >> y >> size >> pushDirection >> velx >> vely)
+    while (file >> type >> r >> g >> b >> std::quoted(text) >> x >> y >> size >> velx >> vely)
     {
 		color col(r, g, b);
         position pos(x, y);
         velocity vel(velx, vely);
-		shape s(type, col, text, pos, size, pushDirection, vel);
+		shape s(type, col, text, pos, size, vel);
 		shapes.push_back(s);
     }
 }
-
 
 void updatePositions(std::vector<shape>& shapes)
 {
@@ -199,11 +160,8 @@ void updatePositions(std::vector<shape>& shapes)
         {
             if (s.s_position.y < 0 || s.s_position.y + s.size > WINDOW_HEIGHT)
                 s.s_velocity.y *= -1;
-        }
-
+        }        
     }
-	// Update positions moved out of the loop to avoid writing config on every frame
-    writeConfig(CONFIG, shapes);
 }
 
 
@@ -212,7 +170,8 @@ int main()
     sf::RenderWindow window(sf::VideoMode(WINDOW_HEIGHT, WINDOW_WIDTH), "Bounceing Shapes");
     ImGui::SFML::Init(window);
 
-	window.setFramerateLimit(60);
+	window.setFramerateLimit(240);
+	window.setVerticalSyncEnabled(true);
 
     std::vector<shape> shapes;
     int selectedShapeIndex = 0;
@@ -286,7 +245,9 @@ int main()
         window.display();
     }
 
-    //writeConfig(CONFIG, shapes);
+
+	// Write the final updated position or config to file instead to writing it every frame
+    writeConfig(CONFIG, shapes);
     ImGui::SFML::Shutdown();
     return 0;
 }

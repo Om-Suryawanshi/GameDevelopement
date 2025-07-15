@@ -356,6 +356,9 @@
     <ClInclude Include="libraries\include\SFML\Window.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="shapes.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="libraries\include\SFML\Audio\SoundFileFactory.inl">

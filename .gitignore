@@ -19,6 +19,8 @@ Release/
 
 # (Optional) ignore local git repos inside subfolders
 BouncingShapes/.git
+BouncingShapes/.gitignore
 OtherStuff/.git
 
 Setup.zip
+git_commands.txt

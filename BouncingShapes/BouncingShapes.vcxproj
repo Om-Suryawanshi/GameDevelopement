@@ -270,6 +270,7 @@
     <ClInclude Include="libraries\include\SFML\Window\Window.hpp" />
     <ClInclude Include="libraries\include\SFML\Window\WindowHandle.hpp" />
     <ClInclude Include="libraries\include\SFML\Window\WindowStyle.hpp" />
+    <ClInclude Include="shapes.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".gitignore" />
