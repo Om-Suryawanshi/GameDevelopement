@@ -7,9 +7,9 @@
 #include <string>
 #include <iostream>
 
-#define WINDOW_HEIGHT 800
-#define WINDOW_WIDTH 1600
-#define CONFIG "config.txt"
+#include "Player.h"
+#include "config/config.h"
+
 
 class GameManager
 {
@@ -19,6 +19,9 @@ protected:
 	ImGuiStyle g_ImguiStyle;
 	bool g_running;
 	sf::Event g_event;
+
+	Player player;
+
 
 	void update(); // Main Game method called every frame
 

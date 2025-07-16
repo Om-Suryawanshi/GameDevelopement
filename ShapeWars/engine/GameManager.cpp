@@ -1,7 +1,6 @@
 #include "GameManager.h"
 
 
-
 GameManager::GameManager()
 	:g_running(true)
 {
@@ -15,6 +14,7 @@ void GameManager::init()
 
 	g_window.setFramerateLimit(60);
 	g_window.setVerticalSyncEnabled(true);
+
 
 	g_ImguiStyle = ImGui::GetStyle();
 }
@@ -40,8 +40,10 @@ void GameManager::update()
 
 
 	ImGui::SFML::Render(g_window);
-	//ImGui::End();
 	g_window.clear();
+	
+	player.update();
+	player.draw(g_window);
 
 	g_window.display();
 }
