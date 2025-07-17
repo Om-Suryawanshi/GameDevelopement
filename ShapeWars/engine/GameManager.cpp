@@ -15,6 +15,7 @@ void GameManager::init()
 	g_window.setFramerateLimit(60);
 	g_window.setVerticalSyncEnabled(true);
 
+	entManager.createEntity<Player>();
 
 	g_ImguiStyle = ImGui::GetStyle();
 }
@@ -38,12 +39,52 @@ void GameManager::update()
 		}
 	}
 
+	ImGui::Begin("Entity Manager");
 
-	ImGui::SFML::Render(g_window);
+	if (ImGui::CollapsingHeader("Entities", ImGuiTreeNodeFlags_DefaultOpen))
+	{
+		auto& allEntities = entManager.getAllEnt();
+		for (const auto& [id, ent] : allEntities)
+		{
+			ImGui::PushID(id); // Avoid ImGui ID collision
+
+			ImGui::Text("ID: %d", id);
+
+			// Show type
+			std::string typeName = "Unknown";
+			switch (ent->getType())
+			{
+			case EntityType::Player: typeName = "Player"; break;
+			case EntityType::Enemy: typeName = "Enemy"; break;
+			case EntityType::Bullet: typeName = "Bullet"; break;
+			default: break;
+			}
+			ImGui::SameLine();
+			ImGui::Text("Type: %s", typeName.c_str());
+			ImGui::SameLine();
+			ImGui::Text("(%f, %f)", ent->getPos().x, ent->getPos().y);
+
+			// Delete Button
+			ImGui::SameLine();
+			if (ImGui::Button("D"))
+			{
+				entManager.markForRemoval(id);
+			}
+
+			ImGui::PopID();
+		}
+	}
+
+	ImGui::End();
+
 	g_window.clear();
 	
-	player.update();
-	player.draw(g_window);
+
+	entManager.update();
+	entManager.draw(g_window);
+
+
+	ImGui::SFML::Render(g_window);
 
 	g_window.display();
 }
@@ -80,14 +121,3 @@ bool GameManager::isRunning()
 {
 	return g_running && g_window.isOpen();
 }
-
-void GameManager::readConfig(std::string& filename) 
-{
-
-}
-
-void GameManager::writeConfig(std::string& filename)
-{
-
-}
-

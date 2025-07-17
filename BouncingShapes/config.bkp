@@ -1,0 +1,4 @@
+circle 1 0 0 "RedBall" 494.268 178.947 43 -2.857 10
+square 0.411765 1 0 "GreenBox" 87.5 312.227 50 -2.5 -3.77
+triangle 0 0 1 "Blue Tri" 241.357 324.197 50 10 10
+ellipse 1 1 0 "Yellow Ellipse" 608 157.086 50 -2 -4.737

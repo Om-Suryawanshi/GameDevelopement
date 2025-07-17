@@ -129,7 +129,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)\imgui\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <LanguageStandard>Default</LanguageStandard>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -146,7 +146,7 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)\imgui\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <LanguageStandard>Default</LanguageStandard>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -157,24 +157,27 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="engine\Bullet.cpp" />
-    <ClCompile Include="engine\Enemy.cpp" />
+    <ClCompile Include="engine\config\config.cpp" />
+    <ClCompile Include="engine\entities\Bullet.cpp" />
+    <ClCompile Include="engine\entities\Enemy.cpp" />
     <ClCompile Include="engine\GameManager.cpp" />
     <ClCompile Include="engine\EntityManager.cpp" />
+    <ClCompile Include="engine\entities\entity.cpp" />
     <ClCompile Include="imgui\imgui-SFML.cpp" />
     <ClCompile Include="imgui\imgui.cpp" />
     <ClCompile Include="imgui\imgui_draw.cpp" />
     <ClCompile Include="imgui\imgui_tables.cpp" />
     <ClCompile Include="imgui\imgui_widgets.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="engine\Player.cpp" />
+    <ClCompile Include="engine\entities\Player.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="engine\Bullet.h" />
+    <ClInclude Include="engine\entities\Bullet.h" />
     <ClInclude Include="engine\config\config.h" />
-    <ClInclude Include="engine\Enemy.h" />
+    <ClInclude Include="engine\entities\Enemy.h" />
     <ClInclude Include="engine\GameManager.h" />
     <ClInclude Include="engine\EntityManager.h" />
+    <ClInclude Include="engine\entities\entity.h" />
     <ClInclude Include="imgui\imconfig-SFML.h" />
     <ClInclude Include="imgui\imconfig.h" />
     <ClInclude Include="imgui\imgui-SFML.h" />
@@ -283,7 +286,7 @@
     <ClInclude Include="libraries\include\SFML\Window\WindowHandle.hpp" />
     <ClInclude Include="libraries\include\SFML\Window\WindowStyle.hpp" />
     <ClInclude Include="engine\config\vec2.h" />
-    <ClInclude Include="engine\Player.h" />
+    <ClInclude Include="engine\entities\Player.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".gitignore" />

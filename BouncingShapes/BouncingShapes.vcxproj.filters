@@ -405,6 +405,7 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="config.txt" />
+    <Text Include="config.bkp" />
   </ItemGroup>
   <ItemGroup>
     <Font Include="MOELA.ttf" />

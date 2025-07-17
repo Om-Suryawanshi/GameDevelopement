@@ -119,12 +119,50 @@ void readConfig(const std::string& filename, std::vector<shape>& shapes)
     while (file >> type >> r >> g >> b >> std::quoted(text) >> x >> y >> size >> velx >> vely)
     {
 		color col(r, g, b);
-        position pos(x, y);
-        velocity vel(velx, vely);
+        vec2 pos(x, y);
+        vec2 vel(velx, vely);
 		shape s(type, col, text, pos, size, vel);
 		shapes.push_back(s);
     }
 }
+
+bool circleCollision(const shape& a, const shape& b)
+{
+    vec2 vec = a.s_position - b.s_position;
+    return (vec.squaredMagnitude() < (a.size + b.size) * (a.size + b.size));
+}
+
+void resolveCircleCollision(shape& a, shape& b)
+{
+    vec2 delta = b.s_position - a.s_position;
+    float dist = delta.magnitude();
+    if (dist == 0.0f) return; // prevent divide-by-zero
+
+    vec2 normal = delta / dist; // normalized direction of collision
+
+    vec2 relVel = a.s_velocity - b.s_velocity;
+
+    float velAlongNormal = relVel.dot(normal);
+
+    if (velAlongNormal > 0)
+        return;
+
+    float restitution = 1.0f; // perfectly elastic
+
+    float impulseMag = -(1 + restitution) * velAlongNormal;
+    impulseMag /= 2.0f; // equal mass
+
+    vec2 impulse = normal * impulseMag;
+
+    a.s_velocity += impulse;
+    b.s_velocity -= impulse;
+
+    // Optional: push them apart slightly to fix overlap
+    float overlap = 0.5f * (a.size + b.size - dist + 0.01f); // small bias
+    a.s_position -= normal * overlap;
+    b.s_position += normal * overlap;
+}
+
 
 void updatePositions(std::vector<shape>& shapes)
 {
@@ -161,6 +199,16 @@ void updatePositions(std::vector<shape>& shapes)
             if (s.s_position.y < 0 || s.s_position.y + s.size > WINDOW_HEIGHT)
                 s.s_velocity.y *= -1;
         }        
+    }
+
+    // Implementing collision only for circles
+    for (int i = 0; i < shapes.size(); i++) {
+        for (int j = i + 1; j < shapes.size(); j++) {
+            if (circleCollision(shapes[i], shapes[j]))
+            {
+                resolveCircleCollision(shapes[i], shapes[j]);
+            }
+        }
     }
 }
 

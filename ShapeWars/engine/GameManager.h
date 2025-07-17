@@ -7,9 +7,10 @@
 #include <string>
 #include <iostream>
 
-#include "Player.h"
+//#include "Player.h"
 #include "config/config.h"
-
+#include "EntityManager.h"
+#include "entities/player.h"
 
 class GameManager
 {
@@ -20,14 +21,9 @@ protected:
 	bool g_running;
 	sf::Event g_event;
 
-	Player player;
-
+	EntityManager entManager;
 
 	void update(); // Main Game method called every frame
-
-private:
-	void readConfig(std::string& filename);
-	void writeConfig(std::string& filename);
 
 
 public:

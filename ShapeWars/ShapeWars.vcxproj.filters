@@ -39,13 +39,19 @@
     <ClCompile Include="engine\EntityManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="engine\Player.cpp">
+    <ClCompile Include="engine\entities\Player.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="engine\Enemy.cpp">
+    <ClCompile Include="engine\entities\Enemy.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="engine\Bullet.cpp">
+    <ClCompile Include="engine\entities\Bullet.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\entities\entity.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\config\config.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -380,16 +386,19 @@
     <ClInclude Include="engine\EntityManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="engine\Player.h">
+    <ClInclude Include="engine\entities\Player.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="engine\Enemy.h">
+    <ClInclude Include="engine\entities\Enemy.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="engine\Bullet.h">
+    <ClInclude Include="engine\entities\Bullet.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="engine\config\config.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\entities\entity.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
