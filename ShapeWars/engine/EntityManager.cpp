@@ -26,6 +26,10 @@ void EntityManager::update()
 	for (auto& [id, ent] : entities)
 	{
 		if (ent) ent->update();
+		if (!ent->getisAlive())
+		{
+			markForRemoval(id);
+		}
 	}
 
 	destroyEnt();

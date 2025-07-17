@@ -3,7 +3,7 @@
 
 Player::Player(int id)
 	: entity(id, 5.0f, 20.0f, 8)
-	, player(size, sides)
+	, player(size, sides) // sf::CircleShape init
 {
 	type = EntityType::Player;
 	isAlive = true;
@@ -46,3 +46,7 @@ vec2 Player::getPos() const
 	return pos;
 }
 
+void Player::die()
+{
+	isAlive = false;
+}

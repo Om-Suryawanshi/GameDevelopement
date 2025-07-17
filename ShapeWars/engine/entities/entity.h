@@ -23,7 +23,10 @@ protected:
 
 public:
 	entity();
-	explicit entity(int id, float speed, float size, float sides): id(id), speed(speed), size(size), sides(sides) {}
+	explicit entity(int id, float speed, float size, float sides) : id(id), speed(speed), size(size), sides(static_cast<int>(sides)) {} // Used for player
+	
+	explicit entity(int id, float speed, float size, float sides, vec2& pos) : id(id), speed(speed), size(size), sides(static_cast<int>(sides)), pos(pos) {} // Used for bullet
+
 	virtual ~entity() = default;
 
 	EntityType getType() const { return type; }
@@ -31,5 +34,7 @@ public:
 	virtual void update() = 0;
 	virtual void draw(sf::RenderWindow& window) = 0;
 	vec2 getPos() const;
+	void die();
+	bool getisAlive() const;
 };
 

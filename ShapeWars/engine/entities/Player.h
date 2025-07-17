@@ -6,7 +6,6 @@
 
 class Player : public entity
 {
-
 public:
 	sf::CircleShape player;
 
@@ -14,5 +13,5 @@ public:
 	void update();
 	void draw(sf::RenderWindow& window);
 	vec2 getPos() const;
+	void die();
 };
-

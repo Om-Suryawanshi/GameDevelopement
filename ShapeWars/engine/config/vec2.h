@@ -9,7 +9,7 @@ public:
 
 	vec2() {};
 	vec2(unsigned int xIn, unsigned int yIn) : x(float(xIn)), y(float(yIn)) {}
-	vec2(int xIn, int yIn) : x(xIn), y(yIn) {}
+	vec2(int xIn, int yIn) : x(static_cast<float>(xIn)), y(static_cast<float>(yIn)) {}
 	vec2(float xIn, float yIn) : x(xIn), y(yIn) {}
 
 	inline vec2 operator + (const vec2& vec) const

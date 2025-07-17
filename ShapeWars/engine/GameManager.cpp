@@ -12,10 +12,11 @@ void GameManager::init()
 	g_window.create(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), "ShapeWars");
 	ImGui::SFML::Init(g_window);
 
-	g_window.setFramerateLimit(60);
+	g_window.setFramerateLimit(FPS);
 	g_window.setVerticalSyncEnabled(true);
 
 	entManager.createEntity<Player>();
+	entManager.createEntity<Enemy>();
 
 	g_ImguiStyle = ImGui::GetStyle();
 }
@@ -36,8 +37,26 @@ void GameManager::update()
 			{
 				g_window.close();
 			}
+
+			//Bullet fire logic
+			if (g_event.type == sf::Event::MouseButtonPressed &&
+				g_event.mouseButton.button == sf::Mouse::Left)
+			{
+				sf::Vector2i mousePixel = sf::Mouse::getPosition(g_window);
+				sf::Vector2f mouseWorld = g_window.mapPixelToCoords(mousePixel);
+				vec2 mousePos(mouseWorld.x, mouseWorld.y);
+
+				std::shared_ptr<entity> playerEnt = entManager.getEnt(0);
+				if (playerEnt && playerEnt->getType() == EntityType::Player)
+				{
+					vec2 playerPos = playerEnt->getPos();
+					vec2 direction = mousePos - playerPos;
+					entManager.createEntity<Bullet>(playerPos, direction);
+				}
+			}
 		}
 	}
+
 
 	ImGui::Begin("Entity Manager");
 
@@ -46,7 +65,7 @@ void GameManager::update()
 		auto& allEntities = entManager.getAllEnt();
 		for (const auto& [id, ent] : allEntities)
 		{
-			ImGui::PushID(id); // Avoid ImGui ID collision
+			ImGui::PushID(id);
 
 			ImGui::Text("ID: %d", id);
 
@@ -68,7 +87,7 @@ void GameManager::update()
 			ImGui::SameLine();
 			if (ImGui::Button("D"))
 			{
-				entManager.markForRemoval(id);
+				ent->die();
 			}
 
 			ImGui::PopID();

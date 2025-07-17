@@ -4,6 +4,7 @@
 
 
 #include "entities/entity.h"
+#include "entities/Bullet.h"
 
 #include "SFML/Graphics.hpp"
 
@@ -13,6 +14,8 @@ private:
 	int nextId;
 	std::unordered_map<int, std::shared_ptr<entity> > entities;
 	std::vector<int> entToRemove;
+	void markForRemoval(int id);
+	void destroyEnt();
 
 public:
 	EntityManager();
@@ -27,8 +30,6 @@ public:
 
 	const std::unordered_map<int, std::shared_ptr<entity>>& getAllEnt() const;
 
-	void markForRemoval(int id);
-	void destroyEnt();
 	std::shared_ptr<entity> getEnt(int id);
 	void update(); // Call update to all entities
 	void draw(sf::RenderWindow& window);

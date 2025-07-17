@@ -11,6 +11,7 @@
 #include "config/config.h"
 #include "EntityManager.h"
 #include "entities/player.h"
+#include "entities/Enemy.h"
 
 class GameManager
 {
