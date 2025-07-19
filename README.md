@@ -11,4 +11,9 @@ To Build the Project the extract the DLL.zip and move all the dlls near the comp
 A basic simulation of bouncing geometric shapes using SFML.  
 ➡️ `GameDevelopment/BouncingShapes/`
 
+
+###🔹 ShapeWars
+Inspired from geometry wars.
+➡️ `GameDevelopment/ShapeWars/`
+
 ---
