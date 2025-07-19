@@ -5,6 +5,7 @@
 
 #include "entities/entity.h"
 #include "entities/Bullet.h"
+#include "Collision.h"
 
 #include "SFML/Graphics.hpp"
 
@@ -33,5 +34,10 @@ public:
 	std::shared_ptr<entity> getEnt(int id);
 	void update(); // Call update to all entities
 	void draw(sf::RenderWindow& window);
+	void pauseEnt();
+	int countByType(EntityType type);
+	bool playerExists();
+	std::shared_ptr<entity> getPlayer();
+	std::vector<entity*> getByType(EntityType type);
 };
 

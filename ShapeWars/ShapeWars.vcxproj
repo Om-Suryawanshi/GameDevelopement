@@ -157,7 +157,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="engine\config\config.cpp" />
+    <ClCompile Include="engine\Collision.cpp" />
     <ClCompile Include="engine\entities\Bullet.cpp" />
     <ClCompile Include="engine\entities\Enemy.cpp" />
     <ClCompile Include="engine\GameManager.cpp" />
@@ -172,8 +172,9 @@
     <ClCompile Include="engine\entities\Player.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="engine\Collision.h" />
+    <ClInclude Include="engine\config\config.hpp" />
     <ClInclude Include="engine\entities\Bullet.h" />
-    <ClInclude Include="engine\config\config.h" />
     <ClInclude Include="engine\entities\Enemy.h" />
     <ClInclude Include="engine\GameManager.h" />
     <ClInclude Include="engine\EntityManager.h" />
@@ -290,6 +291,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include=".gitignore" />
+    <None Include="GameSpecifications.md" />
     <None Include="imgui.ini" />
     <None Include="libraries\include\SFML\Audio\SoundFileFactory.inl" />
     <None Include="libraries\include\SFML\Graphics\Glsl.inl" />
@@ -307,7 +309,7 @@
     <Text Include="config.bkp" />
   </ItemGroup>
   <ItemGroup>
-    <Font Include="MOELA.ttf" />
+    <Font Include="fonts\MOELA.ttf" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

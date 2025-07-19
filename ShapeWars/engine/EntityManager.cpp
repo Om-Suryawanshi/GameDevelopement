@@ -35,6 +35,14 @@ void EntityManager::update()
 	destroyEnt();
 }
 
+void EntityManager::pauseEnt()
+{
+	for (auto& [id, ent] : entities)
+	{
+		ent->pause();
+	}
+}
+
 void EntityManager::draw(sf::RenderWindow& window)
 {
 	for (auto& [id, ent] : entities)
@@ -43,7 +51,16 @@ void EntityManager::draw(sf::RenderWindow& window)
 	}
 }
 
-
+int EntityManager::countByType(EntityType type)
+{
+	int count = 0;
+	for (auto& [id, e] : entities)
+	{
+		if (e->getisAlive() && e->getType() == type)
+			++count;
+	}
+	return count;
+}
 
 std::shared_ptr<entity> EntityManager::getEnt(int id)
 {
@@ -51,6 +68,38 @@ std::shared_ptr<entity> EntityManager::getEnt(int id)
 	return ent != entities.end() ? ent->second : nullptr;
 }
 
+std::shared_ptr<entity> EntityManager::getPlayer()
+{
+	for (auto& [id, ent] : entities)
+	{
+		if (ent->getType() == EntityType::Player)
+		{
+			return ent;
+		}
+	}
+}
+
+bool EntityManager::playerExists()
+{
+	for (auto& ent : getByType(EntityType::Player))
+	{
+		if (ent && ent->getisAlive()) return true;
+	}
+	return false;
+}
+
+std::vector<entity*> EntityManager::getByType(EntityType type)
+{
+	std::vector<entity*> entityList;
+	for (auto& [id, ent] : entities)
+	{
+		if (ent->getType() == type)
+		{
+			entityList.push_back(ent.get());
+		}
+	}
+	return entityList;
+}
 
 const std::unordered_map<int, std::shared_ptr<entity>>& EntityManager::getAllEnt() const
 {

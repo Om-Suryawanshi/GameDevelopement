@@ -2,38 +2,46 @@
 
 
 Player::Player(int id)
-	: entity(id, 5.0f, 20.0f, 8)
-	, player(size, sides) // sf::CircleShape init
+	: entity(id, static_cast<float>(g_Config.game.player.speed), static_cast<float>(g_Config.game.player.shapeRadius), static_cast<float>(g_Config.game.player.vertices))
+	, player(static_cast<float>(g_Config.game.player.shapeRadius), static_cast<size_t>(g_Config.game.player.vertices)) // sf::CircleShape init
 {
 	type = EntityType::Player;
 	isAlive = true;
 
 
 	player.setOrigin(size, size);
-	player.setFillColor(sf::Color::Green);
-	player.setOutlineColor(sf::Color::Blue);
-	player.setOutlineThickness(3.0f);
+	player.setFillColor(sf::Color(g_Config.game.player.fillR, g_Config.game.player.fillG, g_Config.game.player.fillB));
+	player.setOutlineColor(sf::Color(g_Config.game.player.outlineR, g_Config.game.player.outlineG, g_Config.game.player.outlineB));
+	player.setOutlineThickness(static_cast<float>(g_Config.game.player.outlineThickness));
 
-	pos.x = WINDOW_WIDTH / 2;
-	pos.y = WINDOW_HEIGHT / 2;
+	pos.x = static_cast<float>(g_Config.game.window.width) / 2;
+	pos.y = static_cast<float>(g_Config.game.window.height) / 2;
 	player.setPosition(pos.x, pos.y);
 }
 
 void Player::update()
 {
-	// Movement
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) pos.y -= speed;
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) pos.y += speed;
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) pos.x -= speed;
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) pos.x += speed;
+	if (!paused)
+	{
+		if (justRespawned)
+		{
+			justRespawned = false;
+			return;
+		}
+		// Movement
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) pos.y -= speed;
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) pos.y += speed;
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) pos.x -= speed;
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) pos.x += speed;
 
-	// Boundry Checking so the player dosent clip out
-	if (pos.x < size) pos.x = size;
-	if (pos.x > WINDOW_WIDTH - size) pos.x = WINDOW_WIDTH - size;
-	if (pos.y < size) pos.y = size;
-	if (pos.y > WINDOW_HEIGHT - size) pos.y = WINDOW_HEIGHT - size;
+		// Boundry Checking so the player dosent clip out
+		if (pos.x < size) pos.x = size;
+		if (pos.x > g_Config.game.window.width - size) pos.x = g_Config.game.window.width - size;
+		if (pos.y < size) pos.y = size;
+		if (pos.y > g_Config.game.window.height - size) pos.y = g_Config.game.window.height - size;
 
-	player.setPosition(pos.x, pos.y);
+		player.setPosition(pos.x, pos.y);
+	}
 }
 
 void Player::draw(sf::RenderWindow& window)

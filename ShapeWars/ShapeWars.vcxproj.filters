@@ -51,7 +51,7 @@
     <ClCompile Include="engine\entities\entity.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="engine\config\config.cpp">
+    <ClCompile Include="engine\Collision.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -395,10 +395,13 @@
     <ClInclude Include="engine\entities\Bullet.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="engine\config\config.h">
+    <ClInclude Include="engine\entities\entity.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="engine\entities\entity.h">
+    <ClInclude Include="engine\config\config.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\Collision.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -433,12 +436,13 @@
     <None Include="LICENSE" />
     <None Include="imgui.ini" />
     <None Include=".gitignore" />
+    <None Include="GameSpecifications.md" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="config.txt" />
     <Text Include="config.bkp" />
   </ItemGroup>
   <ItemGroup>
-    <Font Include="MOELA.ttf" />
+    <Font Include="fonts\MOELA.ttf" />
   </ItemGroup>
 </Project>
