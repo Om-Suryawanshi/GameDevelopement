@@ -170,6 +170,7 @@
     <ClCompile Include="imgui\imgui_widgets.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="engine\entities\Player.cpp" />
+    <ClCompile Include="engine\RewindSystem.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="engine\Collision.h" />
@@ -288,6 +289,7 @@
     <ClInclude Include="libraries\include\SFML\Window\WindowStyle.hpp" />
     <ClInclude Include="engine\config\vec2.h" />
     <ClInclude Include="engine\entities\Player.h" />
+    <ClInclude Include="engine\RewindSystem.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".gitignore" />

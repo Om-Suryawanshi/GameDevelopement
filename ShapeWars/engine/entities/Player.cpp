@@ -8,7 +8,6 @@ Player::Player(int id)
 	type = EntityType::Player;
 	isAlive = true;
 
-
 	player.setOrigin(size, size);
 	player.setFillColor(sf::Color(g_Config.game.player.fillR, g_Config.game.player.fillG, g_Config.game.player.fillB));
 	player.setOutlineColor(sf::Color(g_Config.game.player.outlineR, g_Config.game.player.outlineG, g_Config.game.player.outlineB));

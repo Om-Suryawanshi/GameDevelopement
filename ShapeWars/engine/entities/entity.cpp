@@ -47,14 +47,19 @@ int entity::getVertices() const
 	return sides;
 }
 
-int entity::getSize() const
+vec2 entity::getVelocity() const
+{
+	return velocity;
+}
+
+float entity::getSize() const
 {
 	return size;
 }
 
-int entity::getSpeed() const
+float entity::getSpeed() const
 {
-	return size;
+	return speed;
 }
 
 void entity::setType(EntityType entType)
@@ -67,7 +72,17 @@ void entity::setPos(vec2 entPos)
 	pos = entPos;
 }
 
-void entity::setLifetime(int life)
+void entity::setLifetime(float life)
 {
 	lifetime = life;
+}
+
+float entity::getAge() const
+{
+	return age;
+}
+
+float entity::getLifetime() const
+{
+	return lifetime;
 }

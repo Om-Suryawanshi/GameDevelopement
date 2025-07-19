@@ -7,13 +7,12 @@
 class Bullet : public entity
 {
 private:
-	vec2 velocity;
 	vec2 direction;
 
 public:
 	sf::CircleShape bullet;
 
-	Bullet(int id, vec2& startPos, vec2& direction);
+	Bullet(int id, vec2 startPos, vec2 direction);
 	void update() override;
 	void draw(sf::RenderWindow& window) override;
 	vec2 getPos() const;

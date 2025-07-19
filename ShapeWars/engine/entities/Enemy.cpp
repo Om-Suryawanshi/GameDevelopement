@@ -3,7 +3,7 @@
 
 Enemy::Enemy(int id, float speed, float size, float sides, EntityType enemyType)
 	: entity(id,speed,size,sides)
-	, enemy(size, static_cast<size_t>(sides))	
+	, enemy(size, static_cast<float>(sides))	
 {
 	isAlive = true;
 	type = enemyType;
@@ -44,10 +44,18 @@ void Enemy::update()
 		{
 			die();
 		}
-		sf::Uint8 alpha = static_cast<sf::Uint8>(255 * (1.0f - (age / lifetime)));
+		float progress = age / lifetime;
+		progress = std::clamp(progress, 0.0f, 1.0f); // Ensure it's within bounds
+
+		sf::Uint8 alpha = static_cast<sf::Uint8>(255 * (1.0f - progress));
+
+		// Clamp to a minimum visible value (e.g., 80)
+		alpha = std::max(alpha, static_cast<sf::Uint8>(80));
+
 		sf::Color currentOutlineColor = enemy.getOutlineColor();
 		currentOutlineColor.a = alpha;
 		enemy.setOutlineColor(currentOutlineColor);
+
 
 		// Enemy Movement Logic
 		pos += velocity;
@@ -61,7 +69,7 @@ void Enemy::update()
 
 void Enemy::rotate()
 {
-	enemy.rotate(1.0f);
+	enemy.rotate(2.0f);
 }
 
 void Enemy::draw(sf::RenderWindow& window)

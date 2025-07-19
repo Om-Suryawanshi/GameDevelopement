@@ -1,6 +1,6 @@
 #include "Bullet.h"
 
-Bullet::Bullet(int id, vec2& startPos, vec2& direction)
+Bullet::Bullet(int id, vec2 startPos, vec2 direction)
 	:entity(id, static_cast<float>(g_Config.game.bullet.speed), static_cast<float>(g_Config.game.bullet.shapeRadius), static_cast<float>(g_Config.game.bullet.vertices), startPos)
 	,direction(direction)
 {

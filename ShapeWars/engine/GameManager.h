@@ -10,6 +10,7 @@
 //#include "Player.h"
 #include "config/config.hpp"
 #include "EntityManager.h"
+#include "RewindSystem.h"
 #include "entities/player.h"
 #include "entities/Enemy.h"
 
@@ -30,6 +31,7 @@ protected:
 	bool m_isPaused = false;
 	Collision collision;
 	EntityManager entManager;
+	RewindSystem rewindSystem;
 
 	// Score
 	int m_score = 0;

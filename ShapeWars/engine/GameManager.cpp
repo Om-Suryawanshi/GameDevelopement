@@ -4,6 +4,7 @@ Config g_Config;
 
 GameManager::GameManager()
 	:g_running(true)
+	,rewindSystem(entManager, 300) // Save 300 frames
 {
 	if (g_Config.readConfig("CONFIG.txt"))
 	{
@@ -71,7 +72,7 @@ void GameManager::update()
 
 			//Bullet fire logic
 			if (g_event.type == sf::Event::MouseButtonPressed &&
-				g_event.mouseButton.button == sf::Mouse::Left && !m_isPaused)
+				g_event.mouseButton.button == sf::Mouse::Left && !m_isPaused && !rewindSystem.isRewinding())
 			{
 				sf::Vector2i mousePixel = sf::Mouse::getPosition(g_window);
 				sf::Vector2f mouseWorld = g_window.mapPixelToCoords(mousePixel);
@@ -98,35 +99,77 @@ void GameManager::update()
 			{
 				g_window.close();
 			}
+
+			if (g_event.type == sf::Event::KeyPressed && g_event.key.code ==  sf::Keyboard::R)
+			{
+				std::cerr << "Rewind triggered" << std::endl;
+				rewindSystem.triggerRewind();
+			}
 		}
 	}
 
 
 	// Enemy Spawn Logic
-	maxEnemies = 10;
-	if (enemySpawnClock.getElapsedTime().asMilliseconds() >= enemySpawnIntervalMs && !m_isPaused)
+	const int maxEnemies = 10;
+	const float safeDistanceFromPlayer = 150.f; // Minimum distance from player to enemy
+
+	if (enemySpawnClock.getElapsedTime().asMilliseconds() >= enemySpawnIntervalMs && !m_isPaused && !rewindSystem.isRewinding())
 	{
-		// Spawn new enemy using random parameters from config
 		currentEnemies = entManager.countByType(EntityType::Enemy);
 		if (currentEnemies < maxEnemies)
 		{
-			float randomSpeed = g_Config.game.enemy.minSpeed +
-				static_cast<float>(rand()) / RAND_MAX *
-				(g_Config.game.enemy.maxSpeed - g_Config.game.enemy.minSpeed);
+			const auto& player = entManager.getPlayer();
+			if (!player) return; // Make sure player exists
 
-			int randomSides = g_Config.game.enemy.minVertices +
-				(rand() % (g_Config.game.enemy.maxVertices - g_Config.game.enemy.minVertices + 1));
+			const vec2& playerPos = player->getPos();
+			const float enemyRadius = static_cast<float>(g_Config.game.enemy.shapeRadius);
+			const float bufferZone = safeDistanceFromPlayer + enemyRadius;
 
-			float radius = static_cast<float>(g_Config.game.enemy.shapeRadius);
+			vec2 spawnPos;
+			int maxAttempts = 100; // Avoid infinite loops
+			bool validPositionFound = false;
 
-			entManager.createEntity<Enemy>(randomSpeed, radius, static_cast<float>(randomSides), EntityType::Enemy);
+			for (int i = 0; i < maxAttempts; ++i)
+			{
+				// Generate random spawn position within window
+				spawnPos = {
+					static_cast<float>(rand() % (g_Config.game.window.width - static_cast<int>(enemyRadius * 2)) + enemyRadius),
+					static_cast<float>(rand() % (g_Config.game.window.height - static_cast<int>(enemyRadius * 2)) + enemyRadius)
+				};
+
+				float dx = spawnPos.x - playerPos.x;
+				float dy = spawnPos.y - playerPos.y;
+				float distanceSquared = dx * dx + dy * dy;
+
+				if (distanceSquared >= bufferZone * bufferZone)
+				{
+					validPositionFound = true;
+					break;
+				}
+			}
+
+			if (validPositionFound)
+			{
+				float randomSpeed = g_Config.game.enemy.minSpeed +
+					static_cast<float>(rand()) / RAND_MAX *
+					(g_Config.game.enemy.maxSpeed - g_Config.game.enemy.minSpeed);
+
+				int randomSides = g_Config.game.enemy.minVertices +
+					(rand() % (g_Config.game.enemy.maxVertices - g_Config.game.enemy.minVertices + 1));
+
+				auto newEnemy = entManager.createEntity<Enemy>(randomSpeed, enemyRadius, static_cast<float>(randomSides), EntityType::Enemy);
+				newEnemy->setPos(spawnPos);
+			}
 		}
-
-		// Restart spawn timer
 		enemySpawnClock.restart();
 	}
 
+
 	//Collision Code between player and enemy
+	/*if (!m_isPaused && !rewindSystem.isRewinding())
+	{
+		std::cerr << "Rewind" << std::endl;
+	}*/
 
 	std::shared_ptr<entity> player = entManager.getPlayer();
 	for (auto& enemy : entManager.getByType(EntityType::Enemy))
@@ -139,7 +182,7 @@ void GameManager::update()
 			{
 				entManager.createEntity<Player>();
 			}
-			m_score -= 500;
+			m_score -= enemy->getVertices() * 100;
 			enemy->die();
 		}
 
@@ -159,7 +202,7 @@ void GameManager::update()
 				{
 					entManager.createEntity<Player>();
 				}
-				m_score -= 500;
+				m_score -= enemy->getVertices() * 100;
 				minienemy->die();
 			}
 		}
@@ -175,7 +218,7 @@ void GameManager::update()
 			if (collision.checkCollision(*bullet, *enemy))
 			{
 				bullet->die();
-				m_score += 100;
+				m_score += enemy->getVertices() * 100;
 
 				//Enemy Split and scatter
 				float angleIncrement = 2.0f * PI / enemy->getVertices();
@@ -212,9 +255,9 @@ void GameManager::update()
 			if (!minienemy->getisAlive()) continue;
 			if (collision.checkCollision(*bullet, *minienemy))
 			{
+				m_score += minienemy->getVertices() * 300;
 				bullet->die();
 				minienemy->die();
-				m_score += 300;
 				break;
 			}
 		}
@@ -265,9 +308,8 @@ void GameManager::update()
 	entManager.update();
 	entManager.draw(g_window);
 
-
 	//ImGui::SFML::Render(g_window);
-
+	rewindSystem.update();
 	g_window.draw(m_scoreText);
 	g_window.display();
 }

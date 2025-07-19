@@ -105,3 +105,9 @@ const std::unordered_map<int, std::shared_ptr<entity>>& EntityManager::getAllEnt
 {
 	return entities;
 }
+
+void EntityManager::clearAll()
+{
+	entities.clear();
+	entToRemove.clear();
+}

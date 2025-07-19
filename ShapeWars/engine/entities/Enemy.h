@@ -11,7 +11,6 @@
 class Enemy : public entity
 {
 protected:
-	vec2 velocity;
 	float angle;
 	bool is_HitbyBullet = false;
 
@@ -24,6 +23,5 @@ public:
 	vec2 getPos() const;
 	void die();
 	void rotate();
-	void setVelocity(const vec2& v) { velocity = v; }
 };
 
