@@ -13,7 +13,7 @@ A basic simulation of bouncing geometric shapes using SFML.
 
 
 ###🔹 ShapeWars
-Inspired from geometry wars.
+Inspired from geometry wars.  
 ➡️ `GameDevelopment/ShapeWars/`
 
 ---
