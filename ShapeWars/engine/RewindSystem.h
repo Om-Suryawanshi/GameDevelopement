@@ -32,6 +32,8 @@ public:
 	void triggerRewind();
 	void loadSnapShot(const FrameSnapshot& snapshot);
 	bool isRewinding() const;
+	void clearHistory();
+	void pauseCapture();
 
 private:
 	EntityManager& entManager;
@@ -39,5 +41,6 @@ private:
 	const int maxFrameCount;
 	int rewindIndex = 0;
 	bool m_rewinding = false;
+	int isPaused = false;
 };
 

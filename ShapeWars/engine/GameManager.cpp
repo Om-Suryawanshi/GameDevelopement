@@ -14,7 +14,17 @@ GameManager::GameManager()
 
 void GameManager::init()
 {
-	g_window.create(sf::VideoMode(g_Config.game.window.width, g_Config.game.window.height), "ShapeWars");
+	// Full Screen logic
+	std::cerr << g_Config.game.window.fullscreen << std::endl;
+	if (g_Config.game.window.fullscreen)
+	{
+		sf::VideoMode desktop = sf::VideoMode::getDesktopMode();
+		g_window.create(desktop, "ShapeWars", sf::Style::Fullscreen);
+	}
+	else 
+	{
+		g_window.create(sf::VideoMode(g_Config.game.window.width, g_Config.game.window.height), "ShapeWars");
+	}
 	ImGui::SFML::Init(g_window);
 
 	g_window.setFramerateLimit(g_Config.game.window.frameLimit);
@@ -88,10 +98,11 @@ void GameManager::update()
 			}
 
 			// Pause with P
-			if (g_event.type == sf::Event::KeyPressed && g_event.key.code == sf::Keyboard::P)
+			if (g_event.type == sf::Event::KeyPressed && g_event.key.code == sf::Keyboard::P && !rewindSystem.isRewinding())
 			{
 				m_isPaused = !m_isPaused;
 				entManager.pauseEnt();
+				rewindSystem.pauseCapture();
 			}
 
 			// Quit Game with esc
@@ -100,7 +111,7 @@ void GameManager::update()
 				g_window.close();
 			}
 
-			if (g_event.type == sf::Event::KeyPressed && g_event.key.code ==  sf::Keyboard::R)
+			if (g_event.type == sf::Event::KeyPressed && g_event.key.code ==  sf::Keyboard::R && !m_isPaused)
 			{
 				std::cerr << "Rewind triggered" << std::endl;
 				rewindSystem.triggerRewind();
@@ -166,10 +177,6 @@ void GameManager::update()
 
 
 	//Collision Code between player and enemy
-	/*if (!m_isPaused && !rewindSystem.isRewinding())
-	{
-		std::cerr << "Rewind" << std::endl;
-	}*/
 
 	std::shared_ptr<entity> player = entManager.getPlayer();
 	for (auto& enemy : entManager.getByType(EntityType::Enemy))
@@ -180,6 +187,7 @@ void GameManager::update()
 			player->die();
 			if (!entManager.playerExists())
 			{
+				rewindSystem.clearHistory();
 				entManager.createEntity<Player>();
 			}
 			m_score -= enemy->getVertices() * 100;
@@ -192,16 +200,12 @@ void GameManager::update()
 			if (collision.checkCollision(*player, *minienemy))
 			{
 				// Prevents duplication of player if which happened in old logic 
-				/* Old logic created multiple players if player died again before the update is executed again
-				player->die();
-				entManager.createEntity<Player>();
-				m_score -= 500;
-				enemy->die(); */
-				player->die();
+				/*player->die();
 				if (!entManager.playerExists())
 				{
+					rewindSystem.clearHistory();
 					entManager.createEntity<Player>();
-				}
+				}*/
 				m_score -= enemy->getVertices() * 100;
 				minienemy->die();
 			}
@@ -240,7 +244,7 @@ void GameManager::update()
 
 					minienemy->setPos(enemy->getPos());
 
-					minienemy->setVelocity(dir * (enemy->getSpeed() / 10.0f));
+					minienemy->setVelocity(dir * (enemy->getSpeed()));
 
 					minienemy->setLifetime(10);
 				}

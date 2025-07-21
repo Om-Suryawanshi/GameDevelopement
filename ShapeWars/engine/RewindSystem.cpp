@@ -42,7 +42,7 @@ void RewindSystem::update() {
     }
 
     // Only store meaningful (non-empty) snapshots
-    if (!snapshot.empty()) {
+    if (!snapshot.empty() && !isPaused) {
         history.push_back(snapshot);
         //std::cerr << "[RewindSystem] Snapshot recorded with " << snapshot.size() << " entities. Total snapshots: " << history.size() << "\n";
 
@@ -61,9 +61,9 @@ void RewindSystem::triggerRewind() {
         m_rewinding = true;
         //std::cerr << "[RewindSystem] Rewind triggered. Starting at index: " << rewindIndex << "\n";
     }
-    else {
+    //else {
         //std::cerr << "[RewindSystem] Rewind failed - history is empty.\n";
-    }
+    //}
 }
 
 bool RewindSystem::isRewinding() const {
@@ -100,4 +100,18 @@ void RewindSystem::loadSnapShot(const FrameSnapshot& snapshot) {
             ent->setAge(snap.age);
         }
     }
+}
+
+void RewindSystem::clearHistory() 
+{
+    history.clear();
+    rewindIndex = 0;
+    m_rewinding = false;
+    std::cerr << "[RewindSystem] History cleared manually.\n";
+}
+
+
+void RewindSystem::pauseCapture()
+{
+    isPaused = !isPaused;
 }
